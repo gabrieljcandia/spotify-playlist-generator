@@ -12,6 +12,7 @@ export async function POST(req: Request): Promise<NextResponse> {
     const result = await generatePrompt(input);
     return NextResponse.json({ response: result });
   } catch (error) {
+    console.error(error);
     return NextResponse.json({ error: "Failed to get response" }, { status: 500 });
   }
 }
