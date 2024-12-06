@@ -152,85 +152,117 @@ export default function Home() {
           <h1 style={styles.title}>Music Playlist Generator</h1>
           <div style={styles.inputContainer}>
             <div style={styles.inputGroup}>
-              <label style={styles.label}>Mood:</label>
-              <select value={mood} onChange={(e) => setMood(e.target.value)} style={styles.input}>
-                <option value="">-</option>
-                <option value="Joyful">Joyful</option>
-                <option value="Chill">Chill</option>
-                <option value="Melancholic">Melancholic</option>
-                <option value="Romantic">Romantic</option>
-                <option value="Uplifting">Uplifting</option>
-                <option value="Mysterious">Mysterious</option>
-                <option value="Nostalgic">Nostalgic</option>
-                <option value="Hopeful">Hopeful</option>
-                <option value="Dark">Dark</option>
-                <option value="Adventurous">Adventurous</option>
-              </select>
-            </div>
-            <div style={styles.inputGroup}>
-              <label style={styles.label}>Playlist Name:</label>
+              <label style={styles.label}>Playlist Name (Required):</label>
               <input
                 type="text"
                 value={playlistName}
                 onChange={(e) => setPlaylistName(e.target.value)}
                 placeholder="Enter Playlist Name"
                 style={styles.input}
+                required
               />
             </div>
             <div style={styles.inputGroup}>
+              <label style={styles.label}>Mood:</label>
+              <input
+                list="mood-options"
+                value={mood}
+                onChange={(e) => setMood(e.target.value)}
+                placeholder="Select or type a mood"
+                style={styles.input}
+              />
+              <datalist id="mood-options">
+                <option value="Joyful" />
+                <option value="Chill" />
+                <option value="Melancholic" />
+                <option value="Romantic" />
+                <option value="Uplifting" />
+                <option value="Mysterious" />
+                <option value="Nostalgic" />
+                <option value="Hopeful" />
+                <option value="Dark" />
+                <option value="Adventurous" />
+              </datalist>
+            </div>
+            <div style={styles.inputGroup}>
               <label style={styles.label}>Scenario:</label>
-              <select value={scenario} onChange={(e) => setScenario(e.target.value)} style={styles.input}>
-                <option value="">-</option>
-                <option value="Road Trip">Road Trip</option>
-                <option value="Studying">Studying</option>
-                <option value="Workout">Workout</option>
-                <option value="Party">Party</option>
-                <option value="Dinner Background">Dinner Background</option>
-                <option value="Meditation">Meditation</option>
-                <option value="Relaxing at Home">Relaxing at Home</option>
-                <option value="Night Walk">Night Walk</option>
-                <option value="Celebration">Celebration</option>
-                <option value="Focus Session">Focus Session</option>
-              </select>
+              <input
+                list="scenario-options"
+                value={scenario}
+                onChange={(e) => setScenario(e.target.value)}
+                placeholder="Select or type a scenario"
+                style={styles.input}
+              />
+              <datalist id="scenario-options">
+                <option value="Road Trip" />
+                <option value="Studying" />
+                <option value="Workout" />
+                <option value="Party" />
+                <option value="Dinner Background" />
+                <option value="Meditation" />
+                <option value="Relaxing at Home" />
+                <option value="Night Walk" />
+                <option value="Celebration" />
+                <option value="Focus Session" />
+              </datalist>
             </div>
             <div style={styles.inputGroup}>
               <label style={styles.label}>Tempo:</label>
-              <select value={tempo} onChange={(e) => setTempo(e.target.value)} style={styles.input}>
-                <option value="">-</option>
-                <option value="Fast">Fast</option>
-                <option value="Slow">Slow</option>
-                <option value="Moderate">Moderate</option>
-                <option value="Groovy">Groovy</option>
-                <option value="Intense">Intense</option>
-                <option value="Flowing">Flowing</option>
-                <option value="Hypnotic">Hypnotic</option>
-              </select>
+              <input
+                list="tempo-options"
+                value={tempo}
+                onChange={(e) => setTempo(e.target.value)}
+                placeholder="Select or type a tempo"
+                style={styles.input}
+              />
+              <datalist id="tempo-options">
+                <option value="Fast" />
+                <option value="Slow" />
+                <option value="Moderate" />
+                <option value="Groovy" />
+                <option value="Intense" />
+                <option value="Flowing" />
+                <option value="Hypnotic" />
+              </datalist>
             </div>
             <div style={styles.inputGroup}>
               <label style={styles.label}>Energy Level:</label>
-              <select value={energyLevel} onChange={(e) => setEnergyLevel(e.target.value)} style={styles.input}>
-                <option value="">-</option>
-                <option value="High Energy">High Energy</option>
-                <option value="Medium Energy">Medium Energy</option>
-                <option value="Low Energy">Low Energy</option>
-                <option value="Relaxing">Relaxing</option>
-                <option value="Explosive">Explosive</option>
-                <option value="Soothing">Soothing</option>
-              </select>
+              <input
+                list="energy-options"
+                value={energyLevel}
+                onChange={(e) => setEnergyLevel(e.target.value)}
+                placeholder="Select or type an energy level"
+                style={styles.input}
+              />
+              <datalist id="energy-options">
+                <option value="High Energy" />
+                <option value="Medium Energy" />
+                <option value="Low Energy" />
+                <option value="Relaxing" />
+                <option value="Explosive" />
+                <option value="Soothing" />
+              </datalist>
             </div>
             <div style={styles.inputGroup}>
               <label style={styles.label}>Lyric Content:</label>
-              <select value={lyricContent} onChange={(e) => setLyricContent(e.target.value)} style={styles.input}>
-                <option value="">-</option>
-                <option value="Non-Romantic">Non-Romantic</option>
-                <option value="Motivational">Motivational</option>
-                <option value="Happy">Happy</option>
-                <option value="Melancholy">Melancholy</option>
-                <option value="Any">Any</option>
-                <option value="Empowering">Empowering</option>
-              </select>
+              <input
+                list="lyric-options"
+                value={lyricContent}
+                onChange={(e) => setLyricContent(e.target.value)}
+                placeholder="Select or type lyric content"
+                style={styles.input}
+              />
+              <datalist id="lyric-options">
+                <option value="Non-Romantic" />
+                <option value="Motivational" />
+                <option value="Happy" />
+                <option value="Melancholy" />
+                <option value="Any" />
+                <option value="Empowering" />
+              </datalist>
             </div>
           </div>
+
 
           {
 
@@ -268,27 +300,6 @@ export default function Home() {
 
           {currentStep === "final" && (
             <>
-              <div>
-                <h2 style={styles.subtitle}>Spotify Results</h2>
-                <table style={styles.table}>
-                  <thead>
-                    <tr>
-                      <th style={styles.tableHeader}>Song</th>
-                      <th style={styles.tableHeader}>Artist</th>
-                      <th style={styles.tableHeader}>Spotify ID</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {spotifyResults.map((song, index) => (
-                      <tr key={index}>
-                        <td style={styles.tableCell}>{song.song}</td>
-                        <td style={styles.tableCell}>{song.artist}</td>
-                        <td style={styles.tableCell}>{song.spotifyId}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
               <button onClick={handleAuthorize} style={styles.button}>
                 Authorize Spotify
               </button>
