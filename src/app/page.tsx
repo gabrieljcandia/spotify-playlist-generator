@@ -95,15 +95,16 @@ export default function Home() {
           "Content-Type": "application/json",
         },
       });
-
+  
       const profileData = await profileResponse.json();
-
       const userId = profileData.id;
+  
       const playlistName = "My Awesome Playlist";
       const description = "Generated Playlist";
       const isPublic = true;
   
-      const res = await fetch("/api/spotify/create-playlist", {
+      // Step 1: Create Playlist
+      const playlistResponse = await fetch("/api/spotify/create-playlist", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -111,10 +112,31 @@ export default function Home() {
         body: JSON.stringify({ userId, playlistName, description, isPublic }),
       });
   
-      const data = await res.json();
-      console.log("Playlist Created:", data);
+      const playlistData = await playlistResponse.json();
+      const playlistId = playlistData.id;
+  
+      if (!playlistId) {
+        console.error("Failed to create playlist");
+        return;
+      }
+  
+      console.log("Playlist Created:", playlistData);
+  
+      // Step 2: Add Tracks to Playlist
+      const trackUris = spotifyResults.map((song) => `spotify:track:${song.spotifyId}`);
+  
+      const addTracksResponse = await fetch("/api/spotify/add-tracks", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ playlistId, trackUris }),
+      });
+  
+      const addTracksData = await addTracksResponse.json();
+      console.log("Tracks Added:", addTracksData);
     } catch (error) {
-      console.error("Create Playlist Error:", error);
+      console.error("Error during playlist creation or track addition:", error);
     }
   };  
 
