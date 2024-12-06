@@ -4,6 +4,7 @@ declare namespace NodeJS {
       SPOTIFY_CLIENT_SECRET: string;
       SPOTIFY_REDIRECT_URI: string;
       OPENAI_API_KEY: string;
+      SPOTIFY_REDIRECT_URI: string;
     }
   }
   

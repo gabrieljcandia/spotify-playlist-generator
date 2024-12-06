@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import { getSpotifyAccessToken } from "./utils/spotify";
 
 export default function Home() {
   const [mood, setMood] = useState("");
@@ -8,20 +9,23 @@ export default function Home() {
   const [energyLevel, setEnergyLevel] = useState("");
   const [lyricContent, setLyricContent] = useState("");
   const [response, setResponse] = useState<any[]>([]);
+  const [spotifyResults, setSpotifyResults] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
+  const [loadingSpotify, setLoadingSpotify] = useState(false);
 
   const handleGenerateSongs = async () => {
     setLoading(true);
     setResponse([]);
+    setSpotifyResults([]);
 
     const prompt = `
-      Generate a list of 30 songs based on the following parameters:
+      Generate a list of 30 songs based on the following parameters, so that I can search for them in Spotify:
       Mood: ${mood || "-"},
       Scenario: ${scenario || "-"},
       Tempo: ${tempo || "-"},
       Energy Level: ${energyLevel || "-"},
       Lyric Content: ${lyricContent || "-"}.
-      The result must be a TypeScript JSON array of song name and artist, exactly like this: [{"song": "songName", "artist": "artistName"}]
+      The result must be a parsed JSON array of song name and artist, like so: [{"song": string, "artist": string}]
     `;
 
     try {
@@ -36,7 +40,7 @@ export default function Home() {
       const data = await res.json();
       if (data.response) {
         console.log("Response:", data.response);
-        const parsedResponse = JSON.parse(data.response); // Parse the response into an array of songs
+        const parsedResponse = JSON.parse(data.response);
         setResponse(parsedResponse);
       } else {
         setResponse([]);
@@ -48,6 +52,71 @@ export default function Home() {
       setLoading(false);
     }
   };
+  
+  const findSpotifyTracks = async () => {
+    setLoadingSpotify(true);
+    setSpotifyResults([]);
+    
+    try {
+      const accessToken = await getSpotifyAccessToken();
+      const results = await Promise.all(
+        response.map(async (song) => {
+          const res = await fetch(
+            `/api/spotify/search?track=${encodeURIComponent(song.song)}&artist=${encodeURIComponent(song.artist)}&access_token=${accessToken}`
+          );
+          const data = await res.json();
+          const trackId = data.tracks?.items[0]?.id || null;
+          return { ...song, spotifyId: trackId };
+        })
+      );
+
+      setSpotifyResults(results.filter((song) => song.spotifyId));
+    } catch (error) {
+      console.error("Error fetching Spotify tracks:", error);
+    } finally {
+      setLoadingSpotify(false);
+    }
+  };
+
+  const handleAuthorize = async () => {
+    try {
+      const res = await fetch("/api/spotify/auth");
+      const { authUrl } = await res.json();
+      window.location.href = authUrl;
+    } catch (error) {
+      console.error("Authorization Error:", error);
+    }
+  };
+
+  const handleCreatePlaylist = async () => {
+    try {
+      const profileResponse = await fetch("/api/spotify/user", {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      const profileData = await profileResponse.json();
+
+      const userId = profileData.id;
+      const playlistName = "My Awesome Playlist";
+      const description = "Generated Playlist";
+      const isPublic = true;
+  
+      const res = await fetch("/api/spotify/create-playlist", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ userId, playlistName, description, isPublic }),
+      });
+  
+      const data = await res.json();
+      console.log("Playlist Created:", data);
+    } catch (error) {
+      console.error("Create Playlist Error:", error);
+    }
+  };  
 
   return (
     <div>
@@ -182,8 +251,28 @@ export default function Home() {
               </li>
             ))}
           </ul>
+          <button onClick={findSpotifyTracks} disabled={loadingSpotify}>
+            {loadingSpotify ? "Finding Spotify IDs..." : "Find Spotify IDs"}
+          </button>
         </div>
       )}
+
+      {spotifyResults.length > 0 && (
+        <div>
+          <h2>Spotify Results</h2>
+          <ul>
+            {spotifyResults.map((song, index) => (
+              <li key={index}>
+                <strong>{song.song}</strong> by {song.artist} - Spotify ID:{" "}
+                {song.spotifyId}
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+
+    <button onClick={handleAuthorize}>Authorize Spotify</button>
+    <button onClick={handleCreatePlaylist}>Create Playlist</button>
     </div>
   );
 }
