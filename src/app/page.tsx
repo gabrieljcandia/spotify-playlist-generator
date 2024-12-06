@@ -12,6 +12,7 @@ export default function Home() {
   const [spotifyResults, setSpotifyResults] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
   const [loadingSpotify, setLoadingSpotify] = useState(false);
+  const [playlistName, setPlaylistName] = useState("");
 
   const handleGenerateSongs = async () => {
     setLoading(true);
@@ -52,11 +53,11 @@ export default function Home() {
       setLoading(false);
     }
   };
-  
+
   const findSpotifyTracks = async () => {
     setLoadingSpotify(true);
     setSpotifyResults([]);
-    
+
     try {
       const accessToken = await getSpotifyAccessToken();
       const results = await Promise.all(
@@ -95,14 +96,13 @@ export default function Home() {
           "Content-Type": "application/json",
         },
       });
-  
+
       const profileData = await profileResponse.json();
       const userId = profileData.id;
-  
-      const playlistName = "My Awesome Playlist";
+
       const description = "Generated Playlist";
       const isPublic = true;
-  
+
       // Step 1: Create Playlist
       const playlistResponse = await fetch("/api/spotify/create-playlist", {
         method: "POST",
@@ -111,20 +111,20 @@ export default function Home() {
         },
         body: JSON.stringify({ userId, playlistName, description, isPublic }),
       });
-  
+
       const playlistData = await playlistResponse.json();
       const playlistId = playlistData.id;
-  
+
       if (!playlistId) {
         console.error("Failed to create playlist");
         return;
       }
-  
+
       console.log("Playlist Created:", playlistData);
-  
+
       // Step 2: Add Tracks to Playlist
       const trackUris = spotifyResults.map((song) => `spotify:track:${song.spotifyId}`);
-  
+
       const addTracksResponse = await fetch("/api/spotify/add-tracks", {
         method: "POST",
         headers: {
@@ -132,13 +132,13 @@ export default function Home() {
         },
         body: JSON.stringify({ playlistId, trackUris }),
       });
-  
+
       const addTracksData = await addTracksResponse.json();
       console.log("Tracks Added:", addTracksData);
     } catch (error) {
       console.error("Error during playlist creation or track addition:", error);
     }
-  };  
+  };
 
   return (
     <div>
@@ -166,6 +166,18 @@ export default function Home() {
           placeholder="Custom mood"
           onBlur={(e) => setMood(e.target.value)}
         />
+      </div>
+
+      <div>
+        <label>
+          Playlist Name:
+          <input
+            type="text"
+            value={playlistName}
+            onChange={(e) => setPlaylistName(e.target.value)}
+            placeholder="Enter Playlist Name"
+          />
+        </label>
       </div>
 
       <div>
@@ -290,11 +302,11 @@ export default function Home() {
               </li>
             ))}
           </ul>
+          <button onClick={handleCreatePlaylist}>Create Playlist</button>
         </div>
       )}
 
-    <button onClick={handleAuthorize}>Authorize Spotify</button>
-    <button onClick={handleCreatePlaylist}>Create Playlist</button>
+      <button onClick={handleAuthorize}>Authorize Spotify</button>
     </div>
   );
 }
