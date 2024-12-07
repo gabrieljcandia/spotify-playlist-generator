@@ -1,8 +1,41 @@
 'use client';
 import { useState } from 'react';
+import styled from 'styled-components';
 import { createPlaylist, searchManySongs } from './utils/spotify';
 import Search from './components/Search';
 import SearchResult from './components/SearchResult';
+
+const PageContainer = styled.div`
+  font-family: Arial, sans-serif;
+  padding: 20px;
+  max-width: 900px;
+  margin: 0 auto;
+  background-color: #f9f9f9;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+`;
+
+const Title = styled.h1`
+  text-align: center;
+  color: #4caf50;
+  margin-bottom: 30px;
+`;
+
+const Button = styled.button`
+  background-color: ${(props) => (props.disabled ? '#ccc' : '#4caf50')};
+  color: white;
+  padding: 12px 20px;
+  font-size: 16px;
+  font-weight: bold;
+  border: none;
+  border-radius: 5px;
+  cursor: ${(props) => (props.disabled ? 'not-allowed' : 'pointer')};
+  transition: background-color 0.3s ease;
+
+  &:hover {
+    background-color: ${(props) => (props.disabled ? '#ccc' : '#45a049')};
+  }
+`;
 
 export default function Home() {
   const [searchResult, setSearchResult] = useState<any[]>([]);
@@ -32,34 +65,27 @@ export default function Home() {
   };
 
   return (
-    <>
-      <div>
-        <div>
-          <h1>Music Playlist Generator</h1>
-          <Search
-            setSearchResult={setSearchResult}
-            playlistName={playlistName}
-            setPlaylistName={setPlaylistName}
-          />
+    <PageContainer>
+      <Title>Music Playlist Generator</Title>
+      <Search
+        setSearchResult={setSearchResult}
+        playlistName={playlistName}
+        setPlaylistName={setPlaylistName}
+      />
+      <SearchResult searchResult={searchResult} />
 
-          <SearchResult searchResult={searchResult} />
+      {searchResult.length > 0 && (
+        <>
+          <Button
+            onClick={handleCreatePlaylist}
+            disabled={loadingCreatePlaylist}
+          >
+            {loadingCreatePlaylist ? 'Creating Playlist...' : 'Create Playlist'}
+          </Button>
+        </>
+      )}
 
-          {searchResult.length > 0 && (
-            <>
-              <button
-                onClick={handleCreatePlaylist}
-                disabled={loadingCreatePlaylist}
-              >
-                {loadingCreatePlaylist
-                  ? 'Creating Playlist...'
-                  : 'Create Playlist'}
-              </button>
-            </>
-          )}
-
-          <button onClick={handleAuthorize}>Authorize Spotify</button>
-        </div>
-      </div>
-    </>
+      <Button onClick={handleAuthorize}>Authorize Spotify</Button>
+    </PageContainer>
   );
 }

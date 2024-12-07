@@ -15,7 +15,8 @@
     "openai": "^4.76.0",
     "prettier": "^3.4.2",
     "react": "^19.0.0",
-    "react-dom": "^19.0.0"
+    "react-dom": "^19.0.0",
+    "styled-components": "^6.1.13"
   },
   "devDependencies": {
     "@types/node": "^20",

@@ -1,12 +1,64 @@
 'use client';
 
 import { useState } from 'react';
+import styled from 'styled-components';
 
 export interface SearchProps {
   setSearchResult: React.Dispatch<React.SetStateAction<any[]>>;
   playlistName: string;
   setPlaylistName: React.Dispatch<React.SetStateAction<string>>;
 }
+
+const Container = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  background-color: #f9f9f9;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+`;
+
+const FormGroup = styled.div`
+  display: flex;
+  flex-direction: column;
+`;
+
+const Label = styled.label`
+  font-size: 16px;
+  font-weight: bold;
+  margin-bottom: 8px;
+  color: #333;
+`;
+
+const Input = styled.input`
+  padding: 10px;
+  font-size: 14px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  transition: border-color 0.3s ease;
+
+  &:focus {
+    border-color: #4caf50;
+    outline: none;
+  }
+`;
+
+const Button = styled.button`
+  background-color: ${(props) => (props.disabled ? '#ccc' : '#4caf50')};
+  color: white;
+  padding: 12px 20px;
+  font-size: 16px;
+  font-weight: bold;
+  border: none;
+  border-radius: 5px;
+  cursor: ${(props) => (props.disabled ? 'not-allowed' : 'pointer')};
+  transition: background-color 0.3s ease;
+
+  &:hover {
+    background-color: ${(props) => (props.disabled ? '#ccc' : '#45a049')};
+  }
+`;
 
 const Search: React.FC<SearchProps> = ({
   setSearchResult,
@@ -60,20 +112,20 @@ const Search: React.FC<SearchProps> = ({
   };
 
   return (
-    <div>
-      <div>
-        <label>Playlist Name (Required):</label>
-        <input
+    <Container>
+      <FormGroup>
+        <Label>Playlist Name (Required):</Label>
+        <Input
           type="text"
           value={playlistName}
           onChange={(e) => setPlaylistName(e.target.value)}
           placeholder="Enter Playlist Name"
           required
         />
-      </div>
-      <div>
-        <label>Mood:</label>
-        <input
+      </FormGroup>
+      <FormGroup>
+        <Label>Mood:</Label>
+        <Input
           list="mood-options"
           value={mood}
           onChange={(e) => setMood(e.target.value)}
@@ -91,10 +143,10 @@ const Search: React.FC<SearchProps> = ({
           <option value="Dark" />
           <option value="Adventurous" />
         </datalist>
-      </div>
-      <div>
-        <label>Scenario:</label>
-        <input
+      </FormGroup>
+      <FormGroup>
+        <Label>Scenario:</Label>
+        <Input
           list="scenario-options"
           value={scenario}
           onChange={(e) => setScenario(e.target.value)}
@@ -112,10 +164,10 @@ const Search: React.FC<SearchProps> = ({
           <option value="Celebration" />
           <option value="Focus Session" />
         </datalist>
-      </div>
-      <div>
-        <label>Tempo:</label>
-        <input
+      </FormGroup>
+      <FormGroup>
+        <Label>Tempo:</Label>
+        <Input
           list="tempo-options"
           value={tempo}
           onChange={(e) => setTempo(e.target.value)}
@@ -130,10 +182,10 @@ const Search: React.FC<SearchProps> = ({
           <option value="Flowing" />
           <option value="Hypnotic" />
         </datalist>
-      </div>
-      <div>
-        <label>Energy Level:</label>
-        <input
+      </FormGroup>
+      <FormGroup>
+        <Label>Energy Level:</Label>
+        <Input
           list="energy-options"
           value={energyLevel}
           onChange={(e) => setEnergyLevel(e.target.value)}
@@ -147,10 +199,10 @@ const Search: React.FC<SearchProps> = ({
           <option value="Explosive" />
           <option value="Soothing" />
         </datalist>
-      </div>
-      <div>
-        <label>Lyric Content:</label>
-        <input
+      </FormGroup>
+      <FormGroup>
+        <Label>Lyric Content:</Label>
+        <Input
           list="lyric-options"
           value={lyricContent}
           onChange={(e) => setLyricContent(e.target.value)}
@@ -164,14 +216,12 @@ const Search: React.FC<SearchProps> = ({
           <option value="Any" />
           <option value="Empowering" />
         </datalist>
-      </div>
+      </FormGroup>
 
-      {
-        <button onClick={handleGenerateSongs} disabled={loading}>
-          {loading ? 'Generating...' : 'Search Songs'}
-        </button>
-      }
-    </div>
+      <Button onClick={handleGenerateSongs} disabled={loading}>
+        {loading ? 'Generating...' : 'Search Songs'}
+      </Button>
+    </Container>
   );
 };
 
