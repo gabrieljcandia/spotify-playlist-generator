@@ -2,6 +2,7 @@
 import { useState } from 'react';
 import { createPlaylist, getSpotifyAccessToken } from './utils/spotify';
 import Search from './components/Search';
+import SearchResult from './components/SearchResult';
 
 export default function Home() {
   const [searchResult, setSearchResult] = useState<any[]>([]);
@@ -71,34 +72,11 @@ export default function Home() {
             setCurrentStep={setCurrentStep}
           />
 
-          {searchResult.length > 0 && (
-            <>
-              <div>
-                <h2>Generated Songs</h2>
-                <table>
-                  <thead>
-                    <tr>
-                      <th>Song</th>
-                      <th>Artist</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {searchResult.map((song, index) => (
-                      <tr key={index}>
-                        <td>{song.song}</td>
-                        <td>{song.artist}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-              <button onClick={findSpotifyTracks} disabled={loadingSpotify}>
-                {loadingSpotify
-                  ? 'Finding Spotify IDs...'
-                  : 'Find Spotify Songs'}
-              </button>
-            </>
-          )}
+          <SearchResult searchResult={searchResult} />
+
+          <button onClick={findSpotifyTracks} disabled={loadingSpotify}>
+            {loadingSpotify ? 'Finding Spotify IDs...' : 'Find Spotify Songs'}
+          </button>
 
           {currentStep === 'final' && (
             <>
