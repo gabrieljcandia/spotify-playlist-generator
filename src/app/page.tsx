@@ -9,14 +9,10 @@ export default function Home() {
   const [playlistName, setPlaylistName] = useState('');
   const [spotifyResults, setSpotifyResults] = useState<any[]>([]);
   const [loadingSpotify, setLoadingSpotify] = useState(false);
-  const [currentStep, setCurrentStep] = useState<
-    'search' | 'spotify' | 'final'
-  >('search');
 
   const findSpotifyTracks = async () => {
     setLoadingSpotify(true);
     setSpotifyResults([]);
-    setCurrentStep('spotify');
 
     try {
       const spotifyAccessToken = await getSpotifyAccessToken();
@@ -33,7 +29,6 @@ export default function Home() {
       );
 
       setSpotifyResults(results.filter((song) => song.spotifyId));
-      setCurrentStep('final');
     } catch (error) {
       console.error('Error fetching Spotify tracks:', error);
     } finally {
@@ -69,16 +64,17 @@ export default function Home() {
             playlistName={playlistName}
             setPlaylistName={setPlaylistName}
             setSpotifyResults={setSpotifyResults}
-            setCurrentStep={setCurrentStep}
           />
 
           <SearchResult searchResult={searchResult} />
 
-          <button onClick={findSpotifyTracks} disabled={loadingSpotify}>
-            {loadingSpotify ? 'Finding Spotify IDs...' : 'Find Spotify Songs'}
-          </button>
+          {searchResult.length > 0 && (
+            <button onClick={findSpotifyTracks} disabled={loadingSpotify}>
+              {loadingSpotify ? 'Finding Spotify IDs...' : 'Find Spotify Songs'}
+            </button>
+          )}
 
-          {currentStep === 'final' && (
+          {spotifyResults.length > 0 && (
             <>
               <button onClick={handleAuthorize}>Authorize Spotify</button>
               <button onClick={handleCreatePlaylist}>Create Playlist</button>

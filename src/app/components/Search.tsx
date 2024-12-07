@@ -7,9 +7,6 @@ export interface SearchProps {
   playlistName: string;
   setPlaylistName: React.Dispatch<React.SetStateAction<string>>;
   setSpotifyResults: React.Dispatch<React.SetStateAction<any[]>>;
-  setCurrentStep: React.Dispatch<
-    React.SetStateAction<'search' | 'spotify' | 'final'>
-  >;
 }
 
 const Search: React.FC<SearchProps> = ({
@@ -17,7 +14,6 @@ const Search: React.FC<SearchProps> = ({
   playlistName,
   setPlaylistName,
   setSpotifyResults,
-  setCurrentStep,
 }) => {
   const [loading, setLoading] = useState(false);
   const [mood, setMood] = useState('');
@@ -30,7 +26,6 @@ const Search: React.FC<SearchProps> = ({
     setLoading(true);
     setSearchResult([]);
     setSpotifyResults([]);
-    setCurrentStep('search');
 
     const prompt = `
         Generate a list of 30 songs based on the following parameters, so that I can search for them in Spotify:
@@ -56,7 +51,6 @@ const Search: React.FC<SearchProps> = ({
         console.log('Response:', data.response);
         const parsedResponse = JSON.parse(data.response);
         setSearchResult(parsedResponse);
-        setCurrentStep('spotify');
       } else {
         setSearchResult([]);
       }
