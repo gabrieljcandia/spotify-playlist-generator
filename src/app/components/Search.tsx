@@ -6,14 +6,12 @@ export interface SearchProps {
   setSearchResult: React.Dispatch<React.SetStateAction<any[]>>;
   playlistName: string;
   setPlaylistName: React.Dispatch<React.SetStateAction<string>>;
-  setSpotifyResults: React.Dispatch<React.SetStateAction<any[]>>;
 }
 
 const Search: React.FC<SearchProps> = ({
   setSearchResult,
   playlistName,
   setPlaylistName,
-  setSpotifyResults,
 }) => {
   const [loading, setLoading] = useState(false);
   const [mood, setMood] = useState('');
@@ -25,7 +23,6 @@ const Search: React.FC<SearchProps> = ({
   const handleGenerateSongs = async () => {
     setLoading(true);
     setSearchResult([]);
-    setSpotifyResults([]);
 
     const prompt = `
         Generate a list of 30 songs based on the following parameters, so that I can search for them in Spotify:

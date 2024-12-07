@@ -9,7 +9,7 @@ export async function getSpotifyAccessToken(): Promise<string> {
   return data.access_token;
 }
 
-export async function searchSongs(track: string, artist: string): Promise<any> {
+export async function searchSong(track: string, artist: string): Promise<any> {
   const accessToken = await getSpotifyAccessToken();
   const response = await fetch(
     `/api/spotify/search?track=${encodeURIComponent(track)}&artist=${encodeURIComponent(artist)}&access_token=${accessToken}`
@@ -21,6 +21,23 @@ export async function searchSongs(track: string, artist: string): Promise<any> {
   }
 
   return data.tracks.items;
+}
+
+export async function searchManySongs(searchResult: any[]) {
+  const spotifyAccessToken = await getSpotifyAccessToken();
+
+  const results = await Promise.all(
+    searchResult.map(async (song) => {
+      const res = await fetch(
+        `/api/spotify/search?track=${encodeURIComponent(song.song)}&artist=${encodeURIComponent(song.artist)}&access_token=${spotifyAccessToken}`,
+      );
+      const data = await res.json();
+      const trackId = data.tracks?.items[0]?.id || null;
+      return { ...song, spotifyId: trackId };
+    }),
+  );
+
+  return results.filter((song) => song.spotifyId);
 }
 
 export async function createPlaylist(playlistName: string, spotifyResults: any[]) {
