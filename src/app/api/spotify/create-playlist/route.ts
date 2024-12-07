@@ -1,9 +1,10 @@
 import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
+import { Cookies } from "@/app/constant/cookies";
 
 export async function POST(req: Request): Promise<NextResponse> {
     const cookieStore = await cookies();
-    const access_token = cookieStore.get("access_token")?.value;
+    const access_token = cookieStore.get(Cookies.SPOTIFY_ACCESS_TOKEN)?.value;
 
     if (!access_token) {
         return NextResponse.json({ error: "Access token missing or expired" }, { status: 401 });
