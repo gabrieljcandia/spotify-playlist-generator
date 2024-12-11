@@ -1,9 +1,11 @@
 'use client';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { createPlaylist, searchManySongs } from './utils/spotify';
 import Search from './components/Search';
 import SearchResult from './components/SearchResult';
+import { Cookies } from './constant/cookies';
+import { getCookieValue } from './utils/cookie';
 
 const PageContainer = styled.div`
   font-family: Arial, sans-serif;
@@ -41,6 +43,12 @@ export default function Home() {
   const [searchResult, setSearchResult] = useState<any[]>([]);
   const [playlistName, setPlaylistName] = useState('');
   const [loadingCreatePlaylist, setLoadingCreatePlaylist] = useState(false);
+  const [authorized, setAuthorized] = useState(false);
+
+  useEffect(() => {
+    const expiresAt = getCookieValue(Cookies.SPOTIFY_EXPIRES_AT);
+    if (expiresAt) setAuthorized(true);
+  }, []);
 
   const handleAuthorize = async () => {
     try {
@@ -85,7 +93,9 @@ export default function Home() {
         </>
       )}
 
-      <Button onClick={handleAuthorize}>Authorize Spotify</Button>
+      {!authorized && (
+        <Button onClick={handleAuthorize}>Authorize Spotify</Button>
+      )}
     </PageContainer>
   );
 }
