@@ -1,3 +1,6 @@
+import { Cookies } from "../constant/cookies";
+import { getCookieValue } from "./cookie";
+
 export async function getSpotifyAccessToken(): Promise<string> {
   const response = await fetch('/api/spotify/token', { method: 'POST' });
   const data = await response.json();
@@ -42,6 +45,8 @@ export async function searchManySongs(searchResult: any[]) {
 
 export async function createPlaylist(playlistName: string, spotifyResults: any[]) {
   try {
+    await refreshTokenIfNeeded();
+
     const profileResponse = await fetch('/api/spotify/user', {
       headers: {
         'Content-Type': 'application/json',
@@ -87,3 +92,11 @@ export async function createPlaylist(playlistName: string, spotifyResults: any[]
     console.error('Error during playlist creation or track addition:', error);
   }
 };
+
+export async function refreshTokenIfNeeded() {
+  const expiresAt = getCookieValue(Cookies.SPOTIFY_EXPIRES_AT);
+  const expired = expiresAt ? new Date(parseInt(expiresAt)) < new Date() : true;
+  if (expired) {
+    await fetch('/api/spotify/auth/refresh', { method: 'POST' });
+  }
+}

@@ -39,9 +39,12 @@ export async function GET(req: Request): Promise<NextResponse> {
     sameSite: "Strict",
   };
 
+  const expirationDate = new Date(Date.now() + expires_in * 1000).getTime();
+
   const headers = new Headers();
   headers.append("Set-Cookie", `${Cookies.SPOTIFY_ACCESS_TOKEN}=${access_token}; Max-Age=${expires_in}; ${Object.entries(cookieOptions).map(([k, v]) => `${k}=${v}`).join("; ")}`);
-  headers.append("Set-Cookie", `${Cookies.SPOTIFY_REFRESH_TOKEN}=${refresh_token}; Max-Age=${60 * 60 * 24 * 30}; ${Object.entries(cookieOptions).map(([k, v]) => `${k}=${v}`).join("; ")}`);
+  headers.append("Set-Cookie", `${Cookies.SPOTIFY_REFRESH_TOKEN}=${refresh_token}; ${Object.entries(cookieOptions).map(([k, v]) => `${k}=${v}`).join("; ")}`);
+  headers.append("Set-Cookie", `${Cookies.SPOTIFY_EXPIRES_AT}=${expirationDate}; Max-Age=${expires_in}; Path=/; Secure; SameSite=Strict`);
 
   headers.append("Location", "/");
   return new NextResponse(null, { status: 302, headers });
