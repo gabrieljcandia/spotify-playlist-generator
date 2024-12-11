@@ -218,7 +218,10 @@ const Search: React.FC<SearchProps> = ({
         </datalist>
       </FormGroup>
 
-      <Button onClick={handleGenerateSongs} disabled={loading}>
+      <Button
+        onClick={handleGenerateSongs}
+        disabled={loading || playlistName.length === 0}
+      >
         {loading ? 'Generating...' : 'Search Songs'}
       </Button>
     </Container>
