@@ -96,6 +96,12 @@ export default function Home() {
       {!authorized && (
         <Button onClick={handleAuthorize}>Authorize Spotify</Button>
       )}
+
+      <Button
+        onClick={() => window.open('https://cafecito.app/ai-playlist-creator')}
+      >
+        Buy me a coffee!
+      </Button>
     </PageContainer>
   );
 }
