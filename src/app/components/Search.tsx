@@ -13,29 +13,31 @@ const Container = styled.div`
   display: flex;
   flex-direction: column;
   gap: 20px;
-  background-color: #f9f9f9;
-  padding: 20px;
-  border-radius: 10px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  background-color: #ffffff;
+  padding: 30px;
+  border-radius: 15px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  max-width: 600px;
+  margin: 0 auto;
 `;
 
 const FormGroup = styled.div`
   display: flex;
   flex-direction: column;
+  gap: 8px;
 `;
 
 const Label = styled.label`
   font-size: 16px;
-  font-weight: bold;
-  margin-bottom: 8px;
+  font-weight: 600;
   color: #333;
 `;
 
 const Input = styled.input`
-  padding: 10px;
+  padding: 12px;
   font-size: 14px;
   border: 1px solid #ddd;
-  border-radius: 5px;
+  border-radius: 8px;
   transition: border-color 0.3s ease;
 
   &:focus {
@@ -47,11 +49,11 @@ const Input = styled.input`
 const Button = styled.button`
   background-color: ${(props) => (props.disabled ? '#ccc' : '#4caf50')};
   color: white;
-  padding: 12px 20px;
+  padding: 14px 20px;
   font-size: 16px;
-  font-weight: bold;
+  font-weight: 600;
   border: none;
-  border-radius: 5px;
+  border-radius: 8px;
   cursor: ${(props) => (props.disabled ? 'not-allowed' : 'pointer')};
   transition: background-color 0.3s ease;
 
@@ -97,7 +99,6 @@ const Search: React.FC<SearchProps> = ({
 
       const data = await res.json();
       if (data.response) {
-        console.log('Response:', data.response);
         const parsedResponse = JSON.parse(data.response);
         setSearchResult(parsedResponse);
       } else {

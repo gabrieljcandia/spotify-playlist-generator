@@ -15,12 +15,21 @@ const PageContainer = styled.div`
   background-color: #f9f9f9;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   border-radius: 10px;
+
+  @media (max-width: 768px) {
+    padding: 15px;
+    max-width: 100%;
+  }
 `;
 
 const Title = styled.h1`
   text-align: center;
   color: #4caf50;
   margin-bottom: 30px;
+
+  @media (max-width: 768px) {
+    font-size: 24px;
+  }
 `;
 
 const ButtonContainer = styled.div`
@@ -28,8 +37,13 @@ const ButtonContainer = styled.div`
   justify-content: center;
   align-items: center;
   flex-wrap: wrap;
-  gap: 20px; /* Adds spacing between buttons */
+  gap: 20px;
   margin-top: 20px;
+
+  @media (max-width: 480px) {
+    gap: 15px;
+    flex-direction: column;
+  }
 `;
 
 const Button = styled.button`
@@ -45,6 +59,15 @@ const Button = styled.button`
 
   &:hover {
     background-color: ${(props) => (props.disabled ? '#ccc' : '#45a049')};
+  }
+
+  @media (max-width: 768px) {
+    padding: 10px 15px;
+    font-size: 14px;
+  }
+
+  @media (max-width: 480px) {
+    width: 100%; /* Ensure buttons are full width on small screens */
   }
 `;
 
