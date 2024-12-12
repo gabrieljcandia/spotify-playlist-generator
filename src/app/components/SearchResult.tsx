@@ -65,6 +65,7 @@ const TableCell = styled.td`
   padding: 12px;
   border: 1px solid #ddd;
   text-align: left;
+  color: #333;
 
   @media (max-width: 768px) {
     padding: 10px;
