@@ -84,7 +84,7 @@ export default function Home() {
 
   return (
     <PageContainer>
-      <Title>Music Playlist Generator</Title>
+      <Title>Spotify Playlist Generator</Title>
       <Search
         setSearchResult={setSearchResult}
         playlistName={playlistName}
