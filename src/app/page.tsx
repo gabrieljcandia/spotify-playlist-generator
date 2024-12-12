@@ -23,6 +23,15 @@ const Title = styled.h1`
   margin-bottom: 30px;
 `;
 
+const ButtonContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 20px; /* Adds spacing between buttons */
+  margin-top: 20px;
+`;
+
 const Button = styled.button`
   background-color: ${(props) => (props.disabled ? '#ccc' : '#4caf50')};
   color: white;
@@ -65,6 +74,7 @@ export default function Home() {
     try {
       const spotifyTracks = await searchManySongs(searchResult);
       await createPlaylist(playlistName, spotifyTracks);
+      alert('Playlist created, enjoy!');
     } catch (error) {
       console.error('Error creating playlist:', error);
     } finally {
@@ -82,26 +92,28 @@ export default function Home() {
       />
       <SearchResult searchResult={searchResult} />
 
-      {searchResult.length > 0 && (
-        <>
+      <ButtonContainer>
+        {searchResult.length > 0 && (
           <Button
             onClick={handleCreatePlaylist}
             disabled={loadingCreatePlaylist}
           >
             {loadingCreatePlaylist ? 'Creating Playlist...' : 'Create Playlist'}
           </Button>
-        </>
-      )}
+        )}
 
-      {!authorized && (
-        <Button onClick={handleAuthorize}>Authorize Spotify</Button>
-      )}
+        {!authorized && (
+          <Button onClick={handleAuthorize}>Authorize Spotify</Button>
+        )}
 
-      <Button
-        onClick={() => window.open('https://cafecito.app/ai-playlist-creator')}
-      >
-        Buy me a coffee!
-      </Button>
+        <Button
+          onClick={() =>
+            window.open(process.env.NEXT_PUBLIC_CAFECITO_APP_REDIRECT_LINK)
+          }
+        >
+          Buy me a coffee!
+        </Button>
+      </ButtonContainer>
     </PageContainer>
   );
 }
