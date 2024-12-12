@@ -97,7 +97,7 @@ export default function Home() {
     try {
       const spotifyTracks = await searchManySongs(searchResult);
       await createPlaylist(playlistName, spotifyTracks);
-      alert('Playlist created, enjoy!');
+      alert('Playlist created! Support us by buying us a coffee :)');
     } catch (error) {
       console.error('Error creating playlist:', error);
     } finally {
