@@ -1,7 +1,11 @@
 'use client';
 import { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import { createPlaylist, searchManySongs } from './utils/spotify';
+import {
+  buildSpotifyPlaylistLink,
+  createPlaylist,
+  searchManySongs,
+} from './utils/spotify';
 import Search from './components/Search';
 import SearchResult from './components/SearchResult';
 import { Cookies } from './constant/cookies';
@@ -75,6 +79,7 @@ export default function Home() {
   const [searchResult, setSearchResult] = useState<any[]>([]);
   const [playlistName, setPlaylistName] = useState('');
   const [loadingCreatePlaylist, setLoadingCreatePlaylist] = useState(false);
+  const [playlistId, setPlaylistId] = useState<string | null>(null);
   const [authorized, setAuthorized] = useState(false);
 
   useEffect(() => {
@@ -96,12 +101,23 @@ export default function Home() {
     setLoadingCreatePlaylist(true);
     try {
       const spotifyTracks = await searchManySongs(searchResult);
-      await createPlaylist(playlistName, spotifyTracks);
+      const createPlaylistResponse = await createPlaylist(
+        playlistName,
+        spotifyTracks,
+      );
+      setPlaylistId(createPlaylistResponse.id);
       alert('Playlist created! Support us by buying us a coffee :)');
     } catch (error) {
       console.error('Error creating playlist:', error);
+      alert('Failed to create playlist. Please try again later.');
     } finally {
       setLoadingCreatePlaylist(false);
+    }
+  };
+
+  const handleOpenPlaylist = () => {
+    if (playlistId) {
+      window.open(buildSpotifyPlaylistLink(playlistId));
     }
   };
 
@@ -127,6 +143,10 @@ export default function Home() {
 
         {!authorized && (
           <Button onClick={handleAuthorize}>Authorize Spotify</Button>
+        )}
+
+        {playlistId && (
+          <Button onClick={handleOpenPlaylist}>Open Playlist</Button>
         )}
 
         <Button

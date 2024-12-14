@@ -1,6 +1,8 @@
 import { Cookies } from "../constant/cookies";
 import { getCookieValue } from "./cookie";
 
+const OPEN_URL = 'https://open.spotify.com/playlist';
+
 export async function getSpotifyAccessToken(): Promise<string> {
   const response = await fetch('/api/spotify/token', { method: 'POST' });
   const data = await response.json();
@@ -88,10 +90,17 @@ export async function createPlaylist(playlistName: string, spotifyResults: any[]
       },
       body: JSON.stringify({ playlistId, trackUris }),
     });
+
+    return playlistData;
   } catch (error) {
     console.error('Error during playlist creation or track addition:', error);
+    throw error;
   }
 };
+
+export function buildSpotifyPlaylistLink(playlistId: string) {
+  return `${OPEN_URL}/${playlistId}`;
+}
 
 export async function refreshTokenIfNeeded() {
   const expiresAt = getCookieValue(Cookies.SPOTIFY_EXPIRES_AT);
