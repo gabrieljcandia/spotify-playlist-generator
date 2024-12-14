@@ -6,5 +6,7 @@ declare namespace NodeJS {
     OPENAI_API_KEY: string;
     SPOTIFY_REDIRECT_URI: string;
     NEXT_PUBLIC_CAFECITO_APP_REDIRECT_LINK: string;
+    SENTRY_DSN: string;
+    SENTRY_AUTH_TOKEN: string;
   }
 }

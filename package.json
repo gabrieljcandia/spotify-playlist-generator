@@ -10,6 +10,7 @@
     "type-check": "tsc --noEmit"
   },
   "dependencies": {
+    "@sentry/nextjs": "^8.45.0",
     "axios": "^1.7.9",
     "next": "15.0.4",
     "openai": "^4.76.0",
