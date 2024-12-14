@@ -8,5 +8,7 @@ declare namespace NodeJS {
     NEXT_PUBLIC_CAFECITO_APP_REDIRECT_LINK: string;
     SENTRY_DSN: string;
     SENTRY_AUTH_TOKEN: string;
+    SENTRY_ORG: string;
+    SENTRY_PROJECT: string;
   }
 }

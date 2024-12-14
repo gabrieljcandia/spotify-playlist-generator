@@ -9,8 +9,8 @@ export default withSentryConfig(nextConfig, {
   // For all available options, see:
   // https://github.com/getsentry/sentry-webpack-plugin#options
 
-  org: 'personal',
-  project: 'spotify-playlist-generator',
+  org: process.env.SENTRY_ORG,
+  project: process.env.SENTRY_PROJECT,
 
   // Only print logs for uploading source maps in CI
   silent: !process.env.CI,
