@@ -10,7 +10,7 @@ import Search from './components/Search';
 import SearchResult from './components/SearchResult';
 import { Cookies } from './constant/cookies';
 import { getCookieValue } from './utils/cookie';
-import * as Sentry from '@sentry/react';
+import { logError } from './utils/logger';
 
 const PageContainer = styled.div`
   font-family: Arial, sans-serif;
@@ -110,10 +110,15 @@ export default function Home() {
       alert('Playlist created! Support us by buying us a coffee :)');
     } catch (error) {
       console.error('Error creating playlist:', error);
-      alert('Failed to create playlist. Please try again later.');
-      Sentry.captureException(error, {
-        data: { searchResult, playlistName },
+      logError(error, {
+        extra: { searchResult, playlistName },
+        contexts: {
+          playlistCreation: {
+            action: 'create playlist',
+          },
+        },
       });
+      alert('Failed to create playlist. Please try again later.');
     } finally {
       setLoadingCreatePlaylist(false);
     }

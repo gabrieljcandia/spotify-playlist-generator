@@ -1,5 +1,6 @@
 import { Cookies } from "../constant/cookies";
 import { getCookieValue } from "./cookie";
+import { logError } from "./logger";
 
 const OPEN_URL = 'https://open.spotify.com/playlist';
 
@@ -45,55 +46,76 @@ export async function searchManySongs(searchResult: any[]) {
   return results.filter((song) => song.spotifyId);
 }
 
+async function fetchJsonWithErrorHandling(url: string, options: RequestInit, action: string, extraData: any = {}) {
+  const response = await fetch(url, options);
+
+  if (!response.ok) {
+    const errorBody = await response.json();
+    const error = new Error(`Failed to ${action}: ${response.statusText}`);
+    (error as any).cause = errorBody;
+    logError(error, {
+      extra: { ...extraData, responseBody: errorBody },
+      contexts: { actionContext: { action } },
+    });
+    throw error;
+  }
+
+  return response.json();
+}
+
 export async function createPlaylist(playlistName: string, spotifyResults: any[]) {
   try {
     await refreshTokenIfNeeded();
 
-    const profileResponse = await fetch('/api/spotify/user', {
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
-
-    const profileData = await profileResponse.json();
+    // Step 1: Fetch User Profile
+    const profileData = await fetchJsonWithErrorHandling(
+      '/api/spotify/user',
+      { headers: { 'Content-Type': 'application/json' } },
+      'fetch user profile',
+      { playlistName }
+    );
     const userId = profileData.id;
 
-    const description = 'Generated Playlist';
-    const isPublic = true;
+    if (!userId) {
+      throw new Error('User ID not found in profile data');
+    }
 
-    // Step 1: Create Playlist
-    const playlistResponse = await fetch('/api/spotify/create-playlist', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
+    // Step 2: Create Playlist
+    const playlistData = await fetchJsonWithErrorHandling(
+      '/api/spotify/create-playlist',
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userId, playlistName, description: 'Generated Playlist', isPublic: true }),
       },
-      body: JSON.stringify({ userId, playlistName, description, isPublic }),
-    });
-
-    const playlistData = await playlistResponse.json();
+      'create playlist',
+      { userId, playlistName }
+    );
     const playlistId = playlistData.id;
 
     if (!playlistId) {
-      console.error('Failed to create playlist');
-      return;
+      throw new Error('Playlist ID not found in response data');
     }
 
-    // Step 2: Add Tracks to Playlist
-    const trackUris = spotifyResults.map(
-      (song) => `spotify:track:${song.spotifyId}`,
+    // Step 3: Add Tracks to Playlist
+    const trackUris = spotifyResults.map((song) => `spotify:track:${song.spotifyId}`);
+    await fetchJsonWithErrorHandling(
+      '/api/spotify/add-tracks',
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ playlistId, trackUris }),
+      },
+      'add tracks to playlist',
+      { playlistId, trackUris }
     );
 
-    await fetch('/api/spotify/add-tracks', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ playlistId, trackUris }),
-    });
-
-    return playlistData;
+    return { id: playlistId };
   } catch (error) {
-    console.error('Error during playlist creation or track addition:', error);
+    logError(error, {
+      extra: { playlistName, spotifyResults, responseBody: (error as any).cause || null },
+      contexts: { generalError: { step: 'overall process' } },
+    });
     throw error;
   }
 };
