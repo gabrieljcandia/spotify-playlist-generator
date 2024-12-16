@@ -48,6 +48,10 @@ export default function RootLayout({
         <meta charSet="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <meta name="theme-color" content="#4caf50" />
+        <meta
+          name="google-site-verification"
+          content="google26ad6d10e1c32fd8.html"
+        />
       </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
