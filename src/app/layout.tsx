@@ -50,7 +50,7 @@ export default function RootLayout({
         <meta name="theme-color" content="#4caf50" />
         <meta
           name="google-site-verification"
-          content="google26ad6d10e1c32fd8.html"
+          content="fKmz3qLL7Yn18q-5e5pPxSqev33MyTBjSciGubCHRLA"
         />
       </head>
       <body
